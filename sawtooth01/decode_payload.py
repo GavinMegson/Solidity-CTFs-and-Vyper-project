@@ -1,7 +1,7 @@
 import base64
 from protobuf.payload_pb2 import *
 
-encoded_payload = '(insert encoded payload here)'
+encoded_payload = 'CAESfwomc2F3dG9vdGguc2V0dGluZ3Mudm90ZS5hdXRob3JpemVkX2tleXMSQjAzNGFhN2U5ODdkYzAxYjE1MmQxZTNkMWMzOTRiNzFiNjkzMzNlM2JmODBhOGM4NDAzYjkyMWJjYmQ5NmU0YzJkZRoRMTU3MDQ2NzM4OC41MzY4Nzg='
 
 payload_wrapper = Payload()
 # decode the payload from the binary format

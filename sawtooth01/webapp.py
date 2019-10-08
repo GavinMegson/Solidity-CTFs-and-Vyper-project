@@ -21,15 +21,43 @@ tasks = []
 
 @app.route('/')
 def render():
-    pass
+    return render_template('page.html', fields=fields,action=action,project_node=project_node,tasks=tasks)
 
 @app.route('/changeaction',methods=['POST'])
 def change_action():
-    pass
+    switch = {
+        "create_project": {"task_name": False, "task_description": False, "new_password": False},
+       "create_task": {"task_name": True, "task_description": True, "new_password": False},
+       "edit_task": {"task_name": True, "task_description": True, "new_password": False},
+       "progress_task": {"task_name": True, "task_description": False, "new_password": False},
+       "add_user": {"task_name": False, "task_description": False, "new_password": True},
+    }
+    global action
+    action = request.form["action"]
+    global fields
+    fields = switch[action]
+    return redirect(url_for('render'))
 
 @app.route('/send', methods=['POST'])
 def send():
-    pass
+    args = []
+    args.append(action)
+    args.append(request.form['password'])
+    args.append(request.form['project_name'])
+    if fields["task_name"]:
+        args.append(request.form['task_name'])
+    if fields["task_description"]:
+        args.append(request.form['task_description'])
+    if fields["new_password"]:
+        args.append(request.form['new_password'])
+
+    txn_factory = transaction_factory.Txn_Factory();
+    passcode = args[1]
+    priv_key = hashlib.sha256(passcode.encode('utf-8')).hexdigest()
+    args[1] = transaction_factory._create_signer(priv_key)
+    # run desired function
+    getattr(txn_factory, args[0])(args[1:])
+    return redirect(url_for('render'))
 
 
 @app.route('/viewproject',methods=['POST'])
